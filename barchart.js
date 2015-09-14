@@ -294,7 +294,6 @@ function BarChart(options) {
 	}
 
 	self.drawTarget = function(target, color) {
-		console.log('drawing');
 		var ctx = self.context();
 		ctx.strokeStyle = color;
 		ctx.lineWidth = 2;
