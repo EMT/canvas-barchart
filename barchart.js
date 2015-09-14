@@ -24,7 +24,8 @@ function BarChart(options) {
 	self._division = options.division || 50;
 	self._divisionColor = options.divisionColor || 'rgb(180,180,180)';
 	self._yAxisLabel = options.yAxisLabel || 50;
-	self._yAxisLabelBackgroundColor = options.yAxisLabelBackgroundColor || 50;
+	self._yAxisLabelBackgroundColor = options.yAxisLabelBackgroundColor || 'rgb(236,236,236)';
+	self._yAxisLabelColor = options.yAxisLabelColor || 'rgb(191,190,190)';
 	self._chartTitle = options.chartTitle || null;
 	self._chartTitleColor = options.chartTitleColor || 'rgb(100,100,100)';
 	self._backgroundColor = options.backgroundColor || 'rgb(255,255,255)';
@@ -120,7 +121,7 @@ function BarChart(options) {
 		ctx.fillStyle = self._yAxisLabelBackgroundColor;
 		ctx.fillRect((self.getChartHeight() / 2) * -1, (self.getYAxisLabelWidth() / 2) * -1, self.getChartHeight(), self._fontSize * 3);
 		ctx.textAlign = "center";
-		ctx.fillStyle = 'rgb(191,190,190)';
+		ctx.fillStyle = self._yAxisLabelColor;
 		ctx.fillText(self._yAxisLabel, 0, 0);
 		ctx.restore();
 	}
