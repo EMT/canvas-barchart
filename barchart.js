@@ -19,6 +19,7 @@ function BarChart(options) {
 	self._ranges = options.ranges || [];
 	self._font = options.font || 'Arial';
 	self._fontSize = options.fontSize || 14;
+	self._barLabelsColor = options.barLabelsColor || 'rgb(189,188,187)';
 	self._chartLow = options.chartLow || null;
 	self._chartHigh = options.chartHigh || null;
 	self._division = options.division || 50;
@@ -210,7 +211,7 @@ function BarChart(options) {
 		var data = self._data;
 		var fontSize = self.getXAxisLabelFontSize();
 
-		ctx.fillStyle = 'rgb(189,188,187)';
+		ctx.fillStyle = self._barLabelsColor;
 
 		for (var i = 0, len = data.length; i < len; i ++) {
 			ctx.save();
