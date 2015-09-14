@@ -98,7 +98,7 @@ function BarChart(options) {
 
 		if (self._targets && self._targets.length) {
 			for (var i = 0, len = self._targets.length; i < len; i ++) {
-				self.drawTarget(self._targets[i].target, self._targets[i].color);
+				self.drawTarget(self._targets[i].label, self._targets[i].target, self._targets[i].color);
 			}
 		}
 
@@ -293,7 +293,8 @@ function BarChart(options) {
 		);
 	}
 
-	self.drawTarget = function(target, color) {
+	self.drawTarget = function(label, target, color) {
+
 		var ctx = self.context();
 		ctx.strokeStyle = color;
 		ctx.lineWidth = 2;
@@ -303,8 +304,14 @@ function BarChart(options) {
 		ctx.lineTo(self._width, self.verticalPixelPosition(target) - 0.5);
 		ctx.stroke();
 		ctx.closePath();
-	}
 
+		if (label !== undefined) {
+			ctx.font = self.font();
+			ctx.textAlign = 'right';
+			ctx.fillStyle = color;
+			ctx.fillText(label, self._width - (self._fontSize / 6), self.verticalPixelPosition(target) + (self._fontSize - 30));
+		}
+	}
 
 	self.chartLow = function() {
 		if (!self._chartLow) {
