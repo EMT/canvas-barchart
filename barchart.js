@@ -23,9 +23,11 @@ function BarChart(options) {
 	self._chartHigh = options.chartHigh || null;
 	self._division = options.division || 50;
 	self._divisionColor = options.divisionColor || 'rgb(180,180,180)';
+	self._divisionLabelsColor = options.divisionLabelsColor || 'rgb(104,103,103)';
 	self._yAxisLabel = options.yAxisLabel || 50;
 	self._yAxisLabelBackgroundColor = options.yAxisLabelBackgroundColor || 'rgb(236,236,236)';
 	self._yAxisLabelColor = options.yAxisLabelColor || 'rgb(191,190,190)';
+	self._yAxisTextAlign = options.yAxisTextAlign || 'center';
 	self._chartTitle = options.chartTitle || null;
 	self._chartTitleColor = options.chartTitleColor || 'rgb(100,100,100)';
 	self._backgroundColor = options.backgroundColor || 'rgb(255,255,255)';
@@ -120,7 +122,7 @@ function BarChart(options) {
 		ctx.rotate(-Math.PI/2);
 		ctx.fillStyle = self._yAxisLabelBackgroundColor;
 		ctx.fillRect((self.getChartHeight() / 2) * -1, (self.getYAxisLabelWidth() / 2) * -1, self.getChartHeight(), self._fontSize * 3);
-		ctx.textAlign = "center";
+		ctx.textAlign = self._yAxisTextAlign;
 		ctx.fillStyle = self._yAxisLabelColor;
 		ctx.fillText(self._yAxisLabel, 0, 0);
 		ctx.restore();
@@ -136,8 +138,8 @@ function BarChart(options) {
 		ctx.strokeStyle = self._divisionColor;
 		ctx.lineWidth = 1;
 		ctx.font = self.font();
-		ctx.textAlign = "right";
-		ctx.fillStyle = 'rgb(104,103,103)';
+		ctx.textAlign = 'right';
+		ctx.fillStyle = self._divisionLabelsColor;
 
 		for (var i = low; i <= high; i += every) {
 			ctx.beginPath();
