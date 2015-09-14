@@ -242,7 +242,7 @@ function BarChart(options) {
 		ctx.lineTo(self._width, yPos - 0.5);
 		ctx.strokeStyle = 'rgb(227,19,46)';
 		ctx.lineWidth = 1;
-		ctx.setLineDash([1, 0]);
+		ctx.setLineDash([3]);
 		ctx.stroke();
 		ctx.closePath();
 
