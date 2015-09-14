@@ -17,6 +17,7 @@ function BarChart(options) {
 	self._width = options.width || 600;
 	self._chartHeight = options.chartHeight || 400;
 	self._ranges = options.ranges || [];
+	self._targets = options.targets || [];
 	self._font = options.font || 'Arial';
 	self._fontSize = options.fontSize || 14;
 	self._barLabelsColor = options.barLabelsColor || 'rgb(189,188,187)';
@@ -92,6 +93,14 @@ function BarChart(options) {
 		self.drawYAxisLabel();
 		self.drawBars();
 		self.drawBarLabels();
+
+		// Targets should be above bars, so draw them after drawing the bars.
+
+		if (self._targets && self._targets.length) {
+			for (var i = 0, len = self._targets.length; i < len; i ++) {
+				self.drawTarget(self._targets[i].target, self._targets[i].color);
+			}
+		}
 
 		if (self.objectLength(self._barColors)) {
 			self.drawKey();
@@ -282,6 +291,19 @@ function BarChart(options) {
 			self._width,
 			self.valueToPixels(low - high)
 		);
+	}
+
+	self.drawTarget = function(target, color) {
+		console.log('drawing');
+		var ctx = self.context();
+		ctx.strokeStyle = color;
+		ctx.lineWidth = 2;
+		ctx.setLineDash([3]);
+		ctx.beginPath();
+		ctx.moveTo(self.horizontalPixelPosition(0), self.verticalPixelPosition(target) - 0.5);
+		ctx.lineTo(self._width, self.verticalPixelPosition(target) - 0.5);
+		ctx.stroke();
+		ctx.closePath();
 	}
 
 
@@ -498,6 +520,3 @@ function BarChart(options) {
 	
 	return self;
 };
-
-
-
