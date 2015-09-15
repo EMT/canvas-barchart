@@ -31,7 +31,7 @@ function BarChart(options) {
 	self._yAxisLabelColor = options.yAxisLabelColor || 'rgb(191,190,190)';
 	self._yAxisTextAlign = options.yAxisTextAlign || 'center';
 	self._chartTitle = options.chartTitle || null;
-	self._chartTitleColor = options.chartTitleColor || 'rgb(100,100,100)';
+	self._chartTitleColor = options.chartTitleColor || 'rgb(195,194,194)';
 	self._backgroundColor = options.backgroundColor || 'rgb(255,255,255)';
 
 
@@ -85,7 +85,7 @@ function BarChart(options) {
 
 		if (self._ranges && self._ranges.length) {
 			for (var i = 0, len = self._ranges.length; i < len; i ++) {
-				self.drawRange(self._ranges[i].low, self._ranges[i].high, self._ranges[i].color);
+				self.drawRange(self._ranges[i].low, self._ranges[i].high, self._ranges[i].color, self._ranges[i].label);
 			}
 		}
 
@@ -119,8 +119,8 @@ function BarChart(options) {
 		var ctx = self.context();
 		ctx.fillStyle = self._chartTitleColor;
 		ctx.font = self.font();
-		ctx.textAlign = 'center';
-		ctx.fillText(self._chartTitle, self._width / 2, self._fontSize * 2);
+		ctx.textAlign = 'left';
+		ctx.fillText(self._chartTitle, 0, self._fontSize * 2);
 	}
 
 
@@ -282,7 +282,7 @@ function BarChart(options) {
 	}
 
 
-	self.drawRange = function(low, high, color) {
+	self.drawRange = function(low, high, color, label) {
 		var ctx = self.context();
 		ctx.fillStyle = color;
 		ctx.fillRect(
@@ -291,6 +291,12 @@ function BarChart(options) {
 			self._width,
 			self.valueToPixels(low - high)
 		);
+		if (label !== undefined) {
+			ctx.font = self.font();
+			ctx.textAlign = 'right';
+			ctx.fillStyle = 'rgb(228,27,58)';
+			ctx.fillText(label, self._width - (self._fontSize / 3), self.verticalPixelPosition(high) - (self._fontSize - 45));
+		}
 	}
 
 	self.drawTarget = function(label, target, color) {
@@ -309,7 +315,7 @@ function BarChart(options) {
 			ctx.font = self.font();
 			ctx.textAlign = 'right';
 			ctx.fillStyle = color;
-			ctx.fillText(label, self._width - (self._fontSize / 6), self.verticalPixelPosition(target) + (self._fontSize - 30));
+			ctx.fillText(label, self._width - (self._fontSize / 3), self.verticalPixelPosition(target) + (self._fontSize - 30));
 		}
 	}
 
