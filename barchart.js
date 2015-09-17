@@ -21,7 +21,7 @@ function BarChart(options) {
 	self._font = options.font || 'Arial';
 	self._fontSize = options.fontSize || 14;
 	self._barLabelsColor = options.barLabelsColor || 'rgb(189,188,187)';
-	self._chartLow = options.chartLow || 0;
+	self._chartLow = (typeof options.chartLow !== 'undefined') ? options.chartLow : null;
 	self._chartHigh = options.chartHigh || null;
 	self._division = options.division || 50;
 	self._divisionColor = options.divisionColor || 'rgb(180,180,180)';
@@ -181,13 +181,30 @@ function BarChart(options) {
 
 		for (var i = 0, len = data.length; i < len; i ++) {
 			if (isNaN(data[i].value)) {
-				var verticalPos = self.verticalPixelPosition(0);
+				var verticalPos = self.verticalPixelPosition(self.barLow(data[i]));
+				var orderedData = [];
 
 				for (var i2 = 0, len2 = data[i].value.length; i2 < len2; i2 ++) {
+					if (data[i].value[i2].value < 0) {
+				console.log(data[i].value[i2]);
+						orderedData.push({
+							value: data[i].value[i2].value * -1,
+							label: data[i].value[i2].label
+						});
+					}
+				}
+
+				for (var i2 = 0, len2 = data[i].value.length; i2 < len2; i2 ++) {
+					if (data[i].value[i2].value > 0) {
+						orderedData.push(data[i].value[i2]);
+					}
+				}
+
+				for (var i2 = 0, len2 = orderedData.length; i2 < len2; i2 ++) {
 					barColor = self._defaultBarColor;
 
-					if (self.getLabelColor(data[i].value[i2].label)) {
-						barColor = self.getLabelColor(data[i].value[i2].label);
+					if (self.getLabelColor(orderedData[i2].label)) {
+						barColor = self.getLabelColor(orderedData[i2].label);
 					}
 					else if (self.getLabelColor(data[i].label)) {
 						barColor = self.getLabelColor(data[i].label);
@@ -198,10 +215,10 @@ function BarChart(options) {
 						self.horizontalPixelPosition(i * (barWidth + barGutter) + barGutter), 
 						verticalPos, 
 						barWidth, 
-						self.valueToPixels(data[i].value[i2].value) * -1
+						self.valueToPixels(orderedData[i2].value) * -1
 					);
 
-					verticalPos -= self.valueToPixels(data[i].value[i2].value);
+					verticalPos -= self.valueToPixels(orderedData[i2].value);
 				}
 			}
 			else {
@@ -330,8 +347,18 @@ function BarChart(options) {
 	}
 
 	self.chartLow = function() {
-		return self._chartLow;
-	}
+		if (self._chartLow === null) {
+			var values = [];
+
+			for (var i = 0, len = self._data.length; i < len; i ++) {
+				values.push(self.barTotal(self._data[i]));
+			}
+
+			self._chartLow = Math.min.apply(Math, values);
+		}
+
+		return (self._chartLow < 0) ? self._chartLow : 0;
+ 	}
 
 
 	self.chartHigh = function() {
@@ -349,6 +376,38 @@ function BarChart(options) {
 	}
 
 
+	/**
+	 * For stacked bars, returns the sum of all negative values,
+	 * otherwise returns zero.
+	 */
+	self.barLow = function(bar) {
+		if (!isNaN(bar.value)) {
+			return bar.value;
+		}
+
+		var barLow = 0;
+
+		for (var i = 0, len = bar.value.length; i < len; i ++) {
+			if (bar.value[i].value < 0) {
+				barLow += bar.value[i].value;
+			}
+		}
+
+		return barLow;
+	}
+
+
+	/**
+	 * Returns the total value of the bar if positive, or zero
+	 */
+	self.barHigh = function(bar) {
+		return (self.barTotal(bar) > 0) ? self.barTotal(bar) : 0;
+	}
+
+
+	/**
+	 * Returns the sum of values in a bar
+	 */
 	self.barTotal = function(bar) {
 		if (!isNaN(bar.value)) {
 			return bar.value;
