@@ -10,8 +10,8 @@ function BarChart(options) {
 	self._data = options.data || null;
 	self._defaultBarColor = options.defaultBarColor || 'rgb(245,30,30)';
 	self._barColors = options.barColors || {};
-	self._barWidth = options.barWidth || 140;
-	self._barGutter = options.barGutter || 40;
+	self._barWidth = options.barWidth || null;
+	self._barGutter = options.barGutter || 0;
 	self._element = (options.elementId) ? this.element(options.elementId) : null;
 	self._canvas = null;
 	self._width = options.width || 600;
@@ -154,7 +154,7 @@ function BarChart(options) {
 		for (var i = low; i <= high; i += every) {
 			ctx.beginPath();
 			ctx.moveTo(self.horizontalPixelPosition(0), self.verticalPixelPosition(i) - 0.5);
-			ctx.lineTo(self._width, self.verticalPixelPosition(i) - 0.5);
+			ctx.lineTo(self.getChartRightPos(), self.verticalPixelPosition(i) - 0.5);
 			ctx.stroke();
 			ctx.closePath();
 			ctx.fillText(i, self.horizontalPixelPosition(0) - (self._fontSize / 2), self.verticalPixelPosition(i) + (self._fontSize / 4));
@@ -406,6 +406,16 @@ function BarChart(options) {
 	}
 
 
+	self.getChartWidth = function() {
+		return self._width - self.getChartLeftPos();
+	}
+
+
+	self.getChartRightPos = function() {
+		return self._width;
+	}
+
+
 	self.getChartLeftPos = function() {
 		return self.getYAxisLabelWidth() + self.getYAxisScaleWidth();
 	}
@@ -528,6 +538,10 @@ function BarChart(options) {
 
 
 	self.setHeight();
+
+	if (!self._barWidth) {
+		self._barWidth = ((self.getChartWidth() - self._barGutter) / self._data.length) - self._barGutter;
+	}
 
 	
 	return self;
