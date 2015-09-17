@@ -12,6 +12,7 @@ function BarChart(options) {
 	self._barColors = options.barColors || {};
 	self._barWidth = options.barWidth || null;
 	self._barGutter = options.barGutter || 0;
+	self._barDivisionType = options.barDivisionType || 'stack';
 	self._element = (options.elementId) ? this.element(options.elementId) : null;
 	self._canvas = null;
 	self._width = options.width || 600;
@@ -183,43 +184,69 @@ function BarChart(options) {
 
 		for (var i = 0, len = data.length; i < len; i ++) {
 			if (isNaN(data[i].value)) {
-				var verticalPos = self.verticalPixelPosition(self.barLow(data[i]));
-				var orderedData = [];
+				if (self._barDivisionType === 'group') {
+					var horizontalPosition = self.horizontalPixelPosition(i * (barWidth + barGutter) + barGutter);
 
-				for (var i2 = 0, len2 = data[i].value.length; i2 < len2; i2 ++) {
-					if (data[i].value[i2].value < 0) {
-						orderedData.push({
-							value: data[i].value[i2].value * -1,
-							label: data[i].value[i2].label
-						});
+					for (var i2 = 0, len2 = data[i].value.length; i2 < len2; i2 ++) {
+						barColor = self._defaultBarColor;
+
+						if (self.getLabelColor(data[i].value[i2].label)) {
+							barColor = self.getLabelColor(data[i].value[i2].label);
+						}
+						else if (self.getLabelColor(data[i].label)) {
+							barColor = self.getLabelColor(data[i].label);
+						}
+
+						ctx.fillStyle = barColor;
+						ctx.fillRect(
+							horizontalPosition, 
+							self.verticalPixelPosition(0),
+							barWidth / data[i].value.length, 
+							self.valueToPixels(data[i].value[i2].value) * -1
+						);
+
+						horizontalPosition += barWidth / data[i].value.length;
 					}
 				}
+				else {
+					var verticalPos = self.verticalPixelPosition(self.barLow(data[i]));
+					var orderedData = [];
 
-				for (var i2 = 0, len2 = data[i].value.length; i2 < len2; i2 ++) {
-					if (data[i].value[i2].value > 0) {
-						orderedData.push(data[i].value[i2]);
-					}
-				}
-
-				for (var i2 = 0, len2 = orderedData.length; i2 < len2; i2 ++) {
-					barColor = self._defaultBarColor;
-
-					if (self.getLabelColor(orderedData[i2].label)) {
-						barColor = self.getLabelColor(orderedData[i2].label);
-					}
-					else if (self.getLabelColor(data[i].label)) {
-						barColor = self.getLabelColor(data[i].label);
+					for (var i2 = 0, len2 = data[i].value.length; i2 < len2; i2 ++) {
+						if (data[i].value[i2].value < 0) {
+							orderedData.push({
+								value: data[i].value[i2].value * -1,
+								label: data[i].value[i2].label
+							});
+						}
 					}
 
-					ctx.fillStyle = barColor;
-					ctx.fillRect(
-						self.horizontalPixelPosition(i * (barWidth + barGutter) + barGutter), 
-						verticalPos, 
-						barWidth, 
-						self.valueToPixels(orderedData[i2].value) * -1
-					);
+					for (var i2 = 0, len2 = data[i].value.length; i2 < len2; i2 ++) {
+						if (data[i].value[i2].value > 0) {
+							orderedData.push(data[i].value[i2]);
+						}
+					}
 
-					verticalPos -= self.valueToPixels(orderedData[i2].value);
+					for (var i2 = 0, len2 = orderedData.length; i2 < len2; i2 ++) {
+						barColor = self._defaultBarColor;
+
+						if (self.getLabelColor(orderedData[i2].label)) {
+							barColor = self.getLabelColor(orderedData[i2].label);
+						}
+						else if (self.getLabelColor(data[i].label)) {
+							barColor = self.getLabelColor(data[i].label);
+						}
+
+						ctx.fillStyle = barColor;
+						ctx.fillRect(
+							self.horizontalPixelPosition(i * (barWidth + barGutter) + barGutter), 
+							verticalPos, 
+							barWidth, 
+							self.valueToPixels(orderedData[i2].value) * -1
+						);
+
+						verticalPos -= self.valueToPixels(orderedData[i2].value);
+					}
 				}
 			}
 			else {
@@ -325,7 +352,6 @@ function BarChart(options) {
 			ctx.textAlign = 'right';
 			ctx.fillStyle = color || self._defaultRangeColor;
 			ctx.fillText(label, self.getChartRightPos(), self.verticalPixelPosition(high) - (self._fontSize * 0.5));
-			// ctx.fillText(label, self._width - (self._fontSize / 3), self.verticalPixelPosition(high) - (self._fontSize - 45));
 		}
 	}
 

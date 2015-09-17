@@ -13,6 +13,7 @@ var chart = new BarChart({
 	chartHeight: 400,
 	barWidth: 140,
 	barGutter: 40,
+	barDivisionType: 'group',
 	defaultBarColor: 'rgb(30,160,30)',
 	ranges: [
 		{
