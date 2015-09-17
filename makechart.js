@@ -11,7 +11,7 @@ var chart = new BarChart({
 	division: 100,
 	width: 1200,
 	chartHeight: 400,
-	// barWidth: 140,
+	barWidth: 140,
 	barGutter: 40,
 	defaultBarColor: 'rgb(30,160,30)',
 	ranges: [

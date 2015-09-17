@@ -31,6 +31,7 @@ function BarChart(options) {
 	self._yAxisLabelColor = options.yAxisLabelColor || 'rgb(191,190,190)';
 	self._yAxisTextAlign = options.yAxisTextAlign || 'center';
 	self._chartTitle = options.chartTitle || null;
+	self._chartTitleTextAlign = options.chartTitleTextAlign || 'left';
 	self._chartTitleColor = options.chartTitleColor || 'rgb(195,194,194)';
 	self._backgroundColor = options.backgroundColor || 'rgb(255,255,255)';
 
@@ -119,8 +120,17 @@ function BarChart(options) {
 		var ctx = self.context();
 		ctx.fillStyle = self._chartTitleColor;
 		ctx.font = self.font();
-		ctx.textAlign = 'left';
-		ctx.fillText(self._chartTitle, 0, self._fontSize * 2);
+		ctx.textAlign = self._chartTitleTextAlign;
+
+		if (self._chartTitleTextAlign === 'left') {
+			ctx.fillText(self._chartTitle, 0, self._fontSize * 2);
+		}
+		else if (self._chartTitleTextAlign === 'center') {
+			ctx.fillText(self._chartTitle, self._width / 2, self._fontSize * 2);
+		}
+		else if (self._chartTitleTextAlign === 'right') {
+			ctx.fillText(self._chartTitle, self._width, self._fontSize * 2);
+		}
 	}
 
 
