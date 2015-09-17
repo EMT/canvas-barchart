@@ -458,7 +458,7 @@ function BarChart(options) {
 
 
 	self.getKeyHeight = function() {
-		return (self.getKeyRows() * self._fontSize * 1.6) + (self._fontSize * 7.2);
+		return (self.getKeyRows()) ? (self.getKeyRows() * self._fontSize * 1.6) + (self._fontSize * 7.2) : 0;
 	}
 
 

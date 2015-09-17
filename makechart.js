@@ -3,7 +3,7 @@
  */
 
 var chart = new BarChart({
-	// chartTitle: 'Primary Energy Use',
+	chartTitle: 'Primary Energy Use',
 	yAxisLabel: 'kWh/m2.year',
 	fontSize: 28,
 	chartLow: 0,
@@ -21,16 +21,16 @@ var chart = new BarChart({
 			color: 'rgb(254,204,204)'
 		}
 	],
-	barColors: {
-		'Space heating': 'rgb(65,168,198)',
-		'Pumps, fans, etc.': 'rgb(24,86,62)',
-		'Cooking': 'rgb(147,162,147)',
-		'Gas (total from bills)': 'rgb(236,102,79)',
-		'Solid fuel (total from bills)': 'rgb(246,167,7)',
-		'Total primary energy': 'rgb(241,138,157)',
-		'Water heating': 'rgb(82,41,57)',
-		'Lighting': 'rgb(10,175,154)'
-	},
+	// barColors: {
+	// 	'Space heating': 'rgb(65,168,198)',
+	// 	'Pumps, fans, etc.': 'rgb(24,86,62)',
+	// 	'Cooking': 'rgb(147,162,147)',
+	// 	'Gas (total from bills)': 'rgb(236,102,79)',
+	// 	'Solid fuel (total from bills)': 'rgb(246,167,7)',
+	// 	'Total primary energy': 'rgb(241,138,157)',
+	// 	'Water heating': 'rgb(82,41,57)',
+	// 	'Lighting': 'rgb(10,175,154)'
+	// },
 	data: [
 		{
 			label: 'UK Average',
