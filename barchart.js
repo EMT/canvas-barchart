@@ -397,7 +397,7 @@ function BarChart(options) {
 
 
 	self.getChartTitleHeight = function() {
-		return (self._chartTitle) ? self._fontSize * 8 : 0;
+		return (self._chartTitle) ? self._fontSize * 8 : self._fontSize * 0.5;
 	}
 
 

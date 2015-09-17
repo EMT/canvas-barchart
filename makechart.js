@@ -3,7 +3,7 @@
  */
 
 var chart = new BarChart({
-	chartTitle: 'Primary Energy Use',
+	// chartTitle: 'Primary Energy Use',
 	yAxisLabel: 'kWh/m2.year',
 	fontSize: 28,
 	chartLow: 0,
