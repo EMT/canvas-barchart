@@ -99,7 +99,7 @@ function BarChart(options) {
 
 		if (self._targets && self._targets.length) {
 			for (var i = 0, len = self._targets.length; i < len; i ++) {
-				self.drawTarget(self._targets[i].label, self._targets[i].target, self._targets[i].color);
+				self.drawTarget(self._targets[i].target, self._targets[i].label, self._targets[i].color);
 			}
 		}
 
@@ -325,7 +325,7 @@ function BarChart(options) {
 		}
 	}
 
-	self.drawTarget = function(label, target, color) {
+	self.drawTarget = function(target, label, color) {
 		var ctx = self.context();
 		ctx.strokeStyle = color;
 		ctx.lineWidth = 2;
