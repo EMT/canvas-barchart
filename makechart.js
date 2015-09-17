@@ -18,14 +18,14 @@ var chart = new BarChart({
 		{
 			low: 50,
 			high: 150,
-			color: 'rgb(254,204,204)'
+			// color: 'rgb(254,204,204)'
 		}
 	],
 	targets: [
 		{
 			target: 200,
 			label: 'My Target',
-			color: 'rgb(0,255,0)'
+			// color: 'rgb(0,255,0)'
 		}
 	],
 	barColors: {

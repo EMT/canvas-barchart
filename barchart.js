@@ -17,7 +17,9 @@ function BarChart(options) {
 	self._width = options.width || 600;
 	self._chartHeight = options.chartHeight || 400;
 	self._ranges = options.ranges || [];
+	self._defaultRangeColor = options._defaultRangeColor || 'rgb(254,204,204)';
 	self._targets = options.targets || [];
+	self._defaultTargetColor = options._defaultTargetColor || 'rgb(236,102,79)';
 	self._font = options.font || 'Arial';
 	self._fontSize = options.fontSize || 14;
 	self._barLabelsColor = options.barLabelsColor || 'rgb(189,188,187)';
@@ -86,7 +88,7 @@ function BarChart(options) {
 
 		if (self._ranges && self._ranges.length) {
 			for (var i = 0, len = self._ranges.length; i < len; i ++) {
-				self.drawRange(self._ranges[i].low, self._ranges[i].high, self._ranges[i].color, self._ranges[i].label);
+				self.drawRange(self._ranges[i].low, self._ranges[i].high, self._ranges[i].label, self._ranges[i].color);
 			}
 		}
 
@@ -308,9 +310,9 @@ function BarChart(options) {
 	}
 
 
-	self.drawRange = function(low, high, color, label) {
+	self.drawRange = function(low, high, label, color) {
 		var ctx = self.context();
-		ctx.fillStyle = color;
+		ctx.fillStyle = color || self._defaultRangeColor;
 		ctx.fillRect(
 			self.horizontalPixelPosition(0), 
 			self.verticalPixelPosition(low),
@@ -327,7 +329,7 @@ function BarChart(options) {
 
 	self.drawTarget = function(target, label, color) {
 		var ctx = self.context();
-		ctx.strokeStyle = color;
+		ctx.strokeStyle = color || self._defaultTargetColor;
 		ctx.lineWidth = 2;
 		ctx.setLineDash([3]);
 		ctx.beginPath();
