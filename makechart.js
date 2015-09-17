@@ -42,7 +42,7 @@ var chart = new BarChart({
 		{
 			label: 'Negative stacked',
 			value: [
-				{value: -50, label: 'Gas (total from bills)'},
+				{value: -150, label: 'Gas (total from bills)'},
 				{value: 80, label: 'Space heating'}
 			]
 		},

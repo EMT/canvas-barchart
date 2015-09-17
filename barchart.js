@@ -351,13 +351,14 @@ function BarChart(options) {
 			var values = [];
 
 			for (var i = 0, len = self._data.length; i < len; i ++) {
-				values.push(self.barTotal(self._data[i]));
+				values.push(self.barLow(self._data[i]));
 			}
 
 			self._chartLow = Math.min.apply(Math, values);
+			self._chartLow = (self._chartLow < 0) ? self._chartLow : 0;
 		}
 
-		return (self._chartLow < 0) ? self._chartLow : 0;
+		return self._chartLow;
  	}
 
 
