@@ -6,7 +6,7 @@ var chart = new BarChart({
 	chartTitle: 'Primary Energy Use',
 	yAxisLabel: 'kWh/m2.year',
 	fontSize: 28,
-	chartLow: -100,
+	chartLow: 0,
 	chartHigh: 400,
 	division: 100,
 	width: 1200,
@@ -48,7 +48,7 @@ var chart = new BarChart({
 				{value: 30, label: 'Solid fuel (total from bills)'}
 			]
 		},
-		{label: 'Your home now (model)', value: -80},
+		// {label: 'Your home now (model)', value: -80},
 		{label: 'Carbon Coop 2050 target', value: 125}
 	]
 });

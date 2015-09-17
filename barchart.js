@@ -21,7 +21,7 @@ function BarChart(options) {
 	self._font = options.font || 'Arial';
 	self._fontSize = options.fontSize || 14;
 	self._barLabelsColor = options.barLabelsColor || 'rgb(189,188,187)';
-	self._chartLow = options.chartLow || null;
+	self._chartLow = options.chartLow || 0;
 	self._chartHigh = options.chartHigh || null;
 	self._division = options.division || 50;
 	self._divisionColor = options.divisionColor || 'rgb(180,180,180)';
@@ -330,16 +330,6 @@ function BarChart(options) {
 	}
 
 	self.chartLow = function() {
-		if (!self._chartLow) {
-			var values = [];
-
-			for (var i = 0, len = self._data.length; i < len; i ++) {
-				values.push(self.barTotal(self._data[i]));
-			}
-
-			self._chartLow = Math.min.apply(Math, values);
-		}
-
 		return self._chartLow;
 	}
 
