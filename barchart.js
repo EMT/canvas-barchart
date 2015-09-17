@@ -319,11 +319,13 @@ function BarChart(options) {
 			self._width,
 			self.valueToPixels(low - high)
 		);
+
 		if (label !== undefined) {
 			ctx.font = self.font();
 			ctx.textAlign = 'right';
-			ctx.fillStyle = 'rgb(228,27,58)';
-			ctx.fillText(label, self._width - (self._fontSize / 3), self.verticalPixelPosition(high) - (self._fontSize - 45));
+			ctx.fillStyle = color || self._defaultRangeColor;
+			ctx.fillText(label, self.getChartRightPos(), self.verticalPixelPosition(high) - (self._fontSize * 0.5));
+			// ctx.fillText(label, self._width - (self._fontSize / 3), self.verticalPixelPosition(high) - (self._fontSize - 45));
 		}
 	}
 
@@ -341,7 +343,7 @@ function BarChart(options) {
 		if (label !== undefined) {
 			ctx.font = self.font();
 			ctx.textAlign = 'right';
-			ctx.fillStyle = color;
+			ctx.fillStyle = color || self._defaultTargetColor;
 			ctx.fillText(label, self.getChartRightPos(), self.verticalPixelPosition(target) - (self._fontSize * 0.5));
 		}
 	}
