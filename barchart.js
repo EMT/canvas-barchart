@@ -104,7 +104,7 @@ function BarChart(options) {
 		}
 
 		if (self.objectLength(self._barColors)) {
-			self.drawKey();
+			self.drawKey(self._barColors);
 		}
 
 		// append canvas to element
@@ -186,7 +186,6 @@ function BarChart(options) {
 
 				for (var i2 = 0, len2 = data[i].value.length; i2 < len2; i2 ++) {
 					if (data[i].value[i2].value < 0) {
-				console.log(data[i].value[i2]);
 						orderedData.push({
 							value: data[i].value[i2].value * -1,
 							label: data[i].value[i2].label
@@ -260,11 +259,11 @@ function BarChart(options) {
 	}
 
 
-	self.drawKey = function() {
+	self.drawKey = function(keyData) {
 		var ctx = self.context();
 		var fontSize = self._fontSize;
-		var maxCols = self.getKeyColumns();
-		var yPos = self._height - self.getKeyHeight();
+		var maxCols = self.getKeyColumns(keyData);
+		var yPos = self._height - self.getKeyHeight(keyData);
 		var xPos;
 		var col = 0;
 
@@ -290,10 +289,10 @@ function BarChart(options) {
 		// draw key items
 		yPos += self._fontSize * 1.6;
 
-		for (var label in self._barColors) {
-			if (self._barColors.hasOwnProperty(label)) {
+		for (var label in keyData) {
+			if (keyData.hasOwnProperty(label)) {
 				xPos = Math.round(col * (self._width / maxCols));
-				ctx.fillStyle = self._barColors[label];
+				ctx.fillStyle = keyData[label];
 				ctx.fillRect(xPos, yPos, fontSize, fontSize);
 				ctx.fillStyle = 'rgb(178,177,176)';
 				ctx.fillText(label, xPos + 45, yPos + (fontSize * 0.9));
@@ -447,7 +446,7 @@ function BarChart(options) {
 
 
 	self.getChartBottomPos = function() {
-		return self._height - self.getBarLabelsHeight() - self.getKeyHeight();
+		return self._height - self.getBarLabelsHeight() - self.getKeyHeight(self._barColors);
 	}
 
 
@@ -517,27 +516,27 @@ function BarChart(options) {
 	}
 
 
-	self.getKeyHeight = function() {
-		return (self.getKeyRows()) ? (self.getKeyRows() * self._fontSize * 1.6) + (self._fontSize * 7.2) : 0;
+	self.getKeyHeight = function(keyData) {
+		return (self.getKeyRows(keyData)) ? (self.getKeyRows(keyData) * self._fontSize * 1.6) + (self._fontSize * 7.2) : 0;
 	}
 
 
-	self.getKeyColumns = function() {
-		var colWidth = self.widestText(self.getKeyTextAsArray(), self.font()) + (self._fontSize * 2) + 45;
+	self.getKeyColumns = function(keyData) {
+		var colWidth = self.widestText(self.getKeyTextAsArray(keyData), self.font()) + (self._fontSize * 2) + 45;
 		return Math.floor(self._width / colWidth);
 	}
 
 
-	self.getKeyRows = function() {
-		return Math.ceil(self.getKeyTextAsArray().length / self.getKeyColumns());
+	self.getKeyRows = function(keyData) {
+		return Math.ceil(self.getKeyTextAsArray(keyData).length / self.getKeyColumns(keyData));
 	}
 
 
-	self.getKeyTextAsArray = function() {
+	self.getKeyTextAsArray = function(keyData) {
 		var textArray = [];
 
-		for (var label in self._barColors) {
-			if (self._barColors.hasOwnProperty(label)) {
+		for (var label in keyData) {
+			if (keyData.hasOwnProperty(label)) {
 				textArray.push(label);
 			}
 		}
@@ -580,7 +579,7 @@ function BarChart(options) {
 
 
 	self.setHeight = function() {
-		self._height = self._chartHeight + self.getChartTitleHeight() + self.getBarLabelsHeight() + self.getKeyHeight();
+		self._height = self._chartHeight + self.getChartTitleHeight() + self.getBarLabelsHeight() + self.getKeyHeight(self._barColors);
 	}
 
 

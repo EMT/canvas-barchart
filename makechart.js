@@ -7,7 +7,7 @@ var chart = new BarChart({
 	yAxisLabel: 'kWh/m2.year',
 	fontSize: 28,
 	// chartLow: 0,
-	chartHigh: 400,
+	// chartHigh: 400,
 	division: 100,
 	width: 1200,
 	chartHeight: 400,
@@ -19,6 +19,13 @@ var chart = new BarChart({
 			low: 50,
 			high: 150,
 			color: 'rgb(254,204,204)'
+		}
+	],
+	targets: [
+		{
+			target: 200,
+			label: 'My Target',
+			color: 'rgb(0,255,0)'
 		}
 	],
 	barColors: {
