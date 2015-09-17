@@ -339,6 +339,7 @@ function BarChart(options) {
 		ctx.lineTo(self.getChartRightPos(), self.verticalPixelPosition(target) - 0.5);
 		ctx.stroke();
 		ctx.closePath();
+		ctx.setLineDash([1]);
 
 		if (label !== undefined) {
 			ctx.font = self.font();
