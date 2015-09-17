@@ -326,14 +326,13 @@ function BarChart(options) {
 	}
 
 	self.drawTarget = function(label, target, color) {
-
 		var ctx = self.context();
 		ctx.strokeStyle = color;
 		ctx.lineWidth = 2;
 		ctx.setLineDash([3]);
 		ctx.beginPath();
 		ctx.moveTo(self.horizontalPixelPosition(0), self.verticalPixelPosition(target) - 0.5);
-		ctx.lineTo(self._width, self.verticalPixelPosition(target) - 0.5);
+		ctx.lineTo(self.getChartRightPos(), self.verticalPixelPosition(target) - 0.5);
 		ctx.stroke();
 		ctx.closePath();
 
@@ -341,7 +340,7 @@ function BarChart(options) {
 			ctx.font = self.font();
 			ctx.textAlign = 'right';
 			ctx.fillStyle = color;
-			ctx.fillText(label, self._width - (self._fontSize / 3), self.verticalPixelPosition(target) + (self._fontSize - 30));
+			ctx.fillText(label, self.getChartRightPos(), self.verticalPixelPosition(target) - (self._fontSize * 0.5));
 		}
 	}
 
