@@ -399,7 +399,9 @@ function BarChart(options) {
 				values.push(self.barTotal(self._data[i]));
 			}
 
-			self._chartHigh = Math.max.apply(Math, values);
+			var maxValue = Math.max.apply(Math, values);
+			self._chartHigh = maxValue + (~~(maxValue / 10));
+
 		}
 
 		return self._chartHigh;
