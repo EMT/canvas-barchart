@@ -26,7 +26,7 @@ function BarChart(options) {
 	self._barLabelsColor = options.barLabelsColor || 'rgb(189,188,187)';
 	self._chartLow = (typeof options.chartLow !== 'undefined') ? options.chartLow : null;
 	self._chartHigh = options.chartHigh || null;
-	self._division = options.division || 50;
+	self._division = options.division || null;
 	self._divisionColor = options.divisionColor || 'rgb(180,180,180)';
 	self._divisionLabelsColor = options.divisionLabelsColor || 'rgb(104,103,103)';
 	self._yAxisLabel = options.yAxisLabel || 50;
@@ -153,7 +153,14 @@ function BarChart(options) {
 
 
 	self.drawScale = function() {
-		var every = self._division;
+
+		if (self._division === null) {
+			var x = Math.floor(self.chartHigh() / 10);
+			var every = Math.round(x / 15) * 10
+		} else {
+			var every = self._division;
+		}
+
 		var low = Math.ceil(self.chartLow() / every) * every;
 		var high = self.chartHigh();
 
@@ -522,7 +529,12 @@ function BarChart(options) {
 
 
 	self.getYAxisScaleWidth = function() {
-		var every = self._division;
+		if (self._division === null) {
+			var every = Math.floor(self.chartHigh() / 10);
+		} else {
+			var every = self._division;
+		}
+
 		var low = Math.ceil(self.chartLow() / every) * every;
 		var high = self.chartHigh();
 		var textArray = [];
