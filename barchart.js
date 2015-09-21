@@ -191,7 +191,7 @@ function BarChart(options) {
 		for (var i = 0, len = data.length; i < len; i ++) {
 			if (isNaN(data[i].value)) {
 				if (self._barDivisionType === 'group') {
-					var horizontalPosition = self.horizontalPixelPosition(i * (barWidth + barGutter) + barGutter);
+					var rawHorizontalPosition = i * (barWidth + barGutter) + barGutter;
 
 					for (var i2 = 0, len2 = data[i].value.length; i2 < len2; i2 ++) {
 						barColor = self._defaultBarColor;
@@ -205,18 +205,23 @@ function BarChart(options) {
 
 						ctx.fillStyle = barColor;
 						ctx.fillRect(
-							horizontalPosition, 
+							self.horizontalPixelPosition(rawHorizontalPosition), 
 							self.verticalPixelPosition(0),
 							barWidth / data[i].value.length, 
 							self.valueToPixels(data[i].value[i2].value) * -1
 						);
 
-						horizontalPosition += barWidth / data[i].value.length;
+						if (data[i].value[i2].variance !== undefined) {
+							self.drawErrorBars(rawHorizontalPosition,data[i].value[i2].value,data[i].value[i2].variance,data[i].value.length);
+						}
+
+						rawHorizontalPosition += barWidth / data[i].value.length;
 					}
 				}
 				else {
 					var verticalPos = self.verticalPixelPosition(self.barLow(data[i]));
 					var orderedData = [];
+
 
 					for (var i2 = 0, len2 = data[i].value.length; i2 < len2; i2 ++) {
 						if (data[i].value[i2].value < 0) {
@@ -252,6 +257,7 @@ function BarChart(options) {
 						);
 
 						verticalPos -= self.valueToPixels(orderedData[i2].value);
+
 					}
 				}
 			}
@@ -278,26 +284,27 @@ function BarChart(options) {
 		}
 	}
 
-	self.drawErrorBars = function(xPos,yPos,variance) {
+	self.drawErrorBars = function(xPos,yPos,variance,barCount) {
+		if (typeof barCount === 'undefined') { barCount = 1; }
 		var ctx = self.context();
-		var barWidth = self._barWidth;
+		var barWidth = self._barWidth / barCount;
 		var barHeight = yPos;
 		var errorVariance = (variance / 100) * barHeight;
 
 		ctx.strokeStyle = self._defaultVarianceColor;
 		ctx.lineWidth = 2;
 
-		if ( yPos != 0 ) {
+		if ( yPos !== 0 ) {
 			ctx.beginPath();
 				// Vertical Line
-				ctx.moveTo(self.horizontalPixelPosition(xPos + (barWidth / 2)), self.verticalPixelPosition(yPos - errorVariance));
-				ctx.lineTo(self.horizontalPixelPosition(xPos + (barWidth / 2)), self.verticalPixelPosition(yPos + errorVariance));
+				ctx.moveTo(self.horizontalPixelPosition(xPos + (barWidth / 2)), self.verticalPixelPosition((yPos) - errorVariance));
+				ctx.lineTo(self.horizontalPixelPosition(xPos + (barWidth / 2)), self.verticalPixelPosition((yPos) + errorVariance));
 				// Top Horizontal Line
-		    	ctx.moveTo(self.horizontalPixelPosition(xPos + (barWidth * .65)),self.verticalPixelPosition(yPos + errorVariance));
-		    	ctx.lineTo(self.horizontalPixelPosition(xPos + (barWidth * .35)),self.verticalPixelPosition(yPos + errorVariance));
+		    	ctx.moveTo(self.horizontalPixelPosition(xPos + (barWidth * .65)),self.verticalPixelPosition((yPos) + errorVariance));
+		    	ctx.lineTo(self.horizontalPixelPosition(xPos + (barWidth * .35)),self.verticalPixelPosition((yPos) + errorVariance));
 		    	// Bottom Horizontal Line
-		    	ctx.moveTo(self.horizontalPixelPosition(xPos + (barWidth * .65)),self.verticalPixelPosition(yPos - errorVariance));
-		    	ctx.lineTo(self.horizontalPixelPosition(xPos + (barWidth * .35)),self.verticalPixelPosition(yPos - errorVariance));
+		    	ctx.moveTo(self.horizontalPixelPosition(xPos + (barWidth * .65)),self.verticalPixelPosition((yPos) - errorVariance));
+		    	ctx.lineTo(self.horizontalPixelPosition(xPos + (barWidth * .35)),self.verticalPixelPosition((yPos) - errorVariance));
 		    	ctx.stroke();
 			ctx.closePath();
 		}
@@ -432,7 +439,16 @@ function BarChart(options) {
 			var values = [];
 
 			for (var i = 0, len = self._data.length; i < len; i ++) {
-				values.push(self.barTotal(self._data[i]));
+				// if (self._data[i].variance !== undefined) {
+
+				// 	var errorVariance = (self._data[i].variance / 100) * self._data[i].value;
+				// 	self._data[i].value = self._data[i].value + errorVariance;
+
+				// 	values.push(self.barTotal(self._data[i]));
+
+				// } else {
+					values.push(self.barTotal(self._data[i]));					
+				// }
 			}
 
 			var maxValue = Math.max.apply(Math, values);
