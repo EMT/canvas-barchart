@@ -287,21 +287,20 @@ function BarChart(options) {
 		ctx.strokeStyle = self._defaultVarianceColor;
 		ctx.lineWidth = 2;
 
-		console.log(barWidth);
-		console.log(barWidth * .20);
-
-		ctx.beginPath();
-			// Vertical Line
-			ctx.moveTo(self.horizontalPixelPosition(xPos + (barWidth / 2)), self.verticalPixelPosition(yPos - errorVariance));
-			ctx.lineTo(self.horizontalPixelPosition(xPos + (barWidth / 2)), self.verticalPixelPosition(yPos + errorVariance));
-			// Top Horizontal Line
-	    	ctx.moveTo(self.horizontalPixelPosition(xPos + (barWidth * .65)),self.verticalPixelPosition(yPos + errorVariance));
-	    	ctx.lineTo(self.horizontalPixelPosition(xPos + (barWidth * .35)),self.verticalPixelPosition(yPos + errorVariance));
-	    	// Bottom Horizontal Line
-	    	ctx.moveTo(self.horizontalPixelPosition(xPos + (barWidth * .65)),self.verticalPixelPosition(yPos - errorVariance));
-	    	ctx.lineTo(self.horizontalPixelPosition(xPos + (barWidth * .35)),self.verticalPixelPosition(yPos - errorVariance));
-	    	ctx.stroke();
-		ctx.closePath();
+		if ( yPos != 0 ) {
+			ctx.beginPath();
+				// Vertical Line
+				ctx.moveTo(self.horizontalPixelPosition(xPos + (barWidth / 2)), self.verticalPixelPosition(yPos - errorVariance));
+				ctx.lineTo(self.horizontalPixelPosition(xPos + (barWidth / 2)), self.verticalPixelPosition(yPos + errorVariance));
+				// Top Horizontal Line
+		    	ctx.moveTo(self.horizontalPixelPosition(xPos + (barWidth * .65)),self.verticalPixelPosition(yPos + errorVariance));
+		    	ctx.lineTo(self.horizontalPixelPosition(xPos + (barWidth * .35)),self.verticalPixelPosition(yPos + errorVariance));
+		    	// Bottom Horizontal Line
+		    	ctx.moveTo(self.horizontalPixelPosition(xPos + (barWidth * .65)),self.verticalPixelPosition(yPos - errorVariance));
+		    	ctx.lineTo(self.horizontalPixelPosition(xPos + (barWidth * .35)),self.verticalPixelPosition(yPos - errorVariance));
+		    	ctx.stroke();
+			ctx.closePath();
+		}
 
 	}
 
