@@ -21,6 +21,7 @@ function BarChart(options) {
 	self._defaultRangeColor = options._defaultRangeColor || 'rgb(254,204,204)';
 	self._targets = options.targets || [];
 	self._defaultTargetColor = options._defaultTargetColor || 'rgb(236,102,79)';
+	self._defaultVarianceColor = options.defaultVarianceColor || 'rgb(0,0,0)';
 	self._font = options.font || 'Arial';
 	self._fontSize = options.fontSize || 14;
 	self._barLabelsColor = options.barLabelsColor || 'rgb(189,188,187)';
@@ -37,8 +38,6 @@ function BarChart(options) {
 	self._chartTitleTextAlign = options.chartTitleTextAlign || 'left';
 	self._chartTitleColor = options.chartTitleColor || 'rgb(195,194,194)';
 	self._backgroundColor = options.backgroundColor || 'rgb(255,255,255)';
-
-
 
 	/**
 	 * Sets canvas to `cvs` if provided, or resturns the canvas element
@@ -263,6 +262,7 @@ function BarChart(options) {
 					barColor = self.getLabelColor(data[i].label);
 				}
 
+
 				ctx.fillStyle = barColor;
 				ctx.fillRect(
 					self.horizontalPixelPosition(i * (barWidth + barGutter) + barGutter), 
@@ -270,10 +270,40 @@ function BarChart(options) {
 					barWidth, 
 					self.valueToPixels(data[i].value) * -1
 				);
+
+				if (data[i].variance !== undefined) {
+					self.drawErrorBars((i * (barWidth + barGutter) + barGutter),(data[i].value),data[i].variance);
+				}
 			}
 		}
 	}
 
+	self.drawErrorBars = function(xPos,yPos,variance) {
+		var ctx = self.context();
+		var barWidth = self._barWidth;
+		var barHeight = yPos;
+		var errorVariance = (variance / 100) * barHeight;
+
+		ctx.strokeStyle = self._defaultVarianceColor;
+		ctx.lineWidth = 2;
+
+		console.log(barWidth);
+		console.log(barWidth * .20);
+
+		ctx.beginPath();
+			// Vertical Line
+			ctx.moveTo(self.horizontalPixelPosition(xPos + (barWidth / 2)), self.verticalPixelPosition(yPos - errorVariance));
+			ctx.lineTo(self.horizontalPixelPosition(xPos + (barWidth / 2)), self.verticalPixelPosition(yPos + errorVariance));
+			// Top Horizontal Line
+	    	ctx.moveTo(self.horizontalPixelPosition(xPos + (barWidth * .65)),self.verticalPixelPosition(yPos + errorVariance));
+	    	ctx.lineTo(self.horizontalPixelPosition(xPos + (barWidth * .35)),self.verticalPixelPosition(yPos + errorVariance));
+	    	// Bottom Horizontal Line
+	    	ctx.moveTo(self.horizontalPixelPosition(xPos + (barWidth * .65)),self.verticalPixelPosition(yPos - errorVariance));
+	    	ctx.lineTo(self.horizontalPixelPosition(xPos + (barWidth * .35)),self.verticalPixelPosition(yPos - errorVariance));
+	    	ctx.stroke();
+		ctx.closePath();
+
+	}
 
 	self.drawBarLabels = function() {
 		var ctx = self.context();

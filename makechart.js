@@ -65,7 +65,7 @@ var chart = new BarChart({
 			]
 		},
 		{label: 'Your home now (model)', value: -80},
-		{label: 'Carbon Coop 2050 target', value: 125}
+		{label: 'Carbon Coop 2050 target', value: 125, variance: 30}
 	]
 });
 
