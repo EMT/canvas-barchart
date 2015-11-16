@@ -13,7 +13,7 @@ var chart = new BarChart({
 	chartHeight: 400,
 	barWidth: 140,
 	barGutter: 40,
-	barDivisionType: 'group',
+	barDivisionType: 'stack',
 	defaultBarColor: 'rgb(30,160,30)',
 	ranges: [
 		{
@@ -46,7 +46,8 @@ var chart = new BarChart({
 			value: [
 				{value: 50, label: 'Gas (total from bills)'},
 				{value: 80, label: 'Space heating'}
-			]
+			],
+			variance: 20
 		},
 		{
 			label: 'Negative stacked',
@@ -65,9 +66,73 @@ var chart = new BarChart({
 			]
 		},
 		{label: 'Your home now (model)', value: -80},
-		{label: 'Carbon Coop 2050 target', value: 125, variance: 30}
+		{label: '2050 target', value: 125, variance: 30}
 	]
 });
 
 chart.draw('barchart-stacked');
+
+
+var chart = new BarChart({
+	chartTitle: 'Primary Energy Use',
+	yAxisLabel: 'kWh/m2.year',
+	fontSize: 28,
+	division: 100,
+	width: 1200,
+	chartHeight: 400,
+	// barWidth: 140,
+	barGutter: 40,
+	barDivisionType: 'group',
+	defaultBarColor: 'rgb(30,160,30)',
+	ranges: [
+		{
+			low: 50,
+			high: 150,
+			label: 'Test Range',
+			color: 'rgb(217,238,244)'
+		}
+	],
+	targets: [
+		{
+			target: 100,
+			label: 'My Target',
+			color: 'rgb(0,180,180)'
+		}
+	],
+	barColors: {
+		'Space heating': 'rgb(65,168,198)',
+		'Gas (total from bills)': 'rgb(236,102,79)',
+		'Water heating': 'rgb(82,41,57)',
+	},
+	data: [
+		{
+			label: 'UK Average',
+			value: [
+				{value: 30, label: 'Gas (total from bills)'},
+				{value: 40, label: 'Space heating'},
+				{value: 20, label: 'Water heating'}
+			],
+			variance: 20
+		},
+		{
+			label: 'Label 2',
+			value: [
+				{value: 50, label: 'Gas (total from bills)'},
+				{value: 80, label: 'Space heating'},
+				{value: 25, label: 'Water heating'}
+			],
+		},
+		{
+			label: 'Label 3',
+			value: [
+				{value: 60, label: 'Gas (total from bills)'},
+				{value: 20, label: 'Space heating'},
+				{value: 32, label: 'Water heating'}
+			],
+		}
+	]
+});
+
+chart.draw('barchart');
+
 

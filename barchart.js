@@ -2,6 +2,8 @@
  * Bar Chart Library
  */
 
+'use strict';
+
 function BarChart(options) {
 
 	var self = this;
@@ -22,6 +24,7 @@ function BarChart(options) {
 	self._targets = options.targets || [];
 	self._defaultTargetColor = options._defaultTargetColor || 'rgb(236,102,79)';
 	self._defaultVarianceColor = options.defaultVarianceColor || 'rgb(0,0,0)';
+	self._defaultVarianceLineWidth = options.defaultVarianceLineWidth || 1;
 	self._font = options.font || 'Arial';
 	self._fontSize = options.fontSize || 14;
 	self._barLabelsColor = options.barLabelsColor || 'rgb(189,188,187)';
@@ -63,7 +66,7 @@ function BarChart(options) {
 
 	self.context = function() {
 		return self.canvas().getContext('2d');
-	}
+	};
 
 
 	self.element = function(elementId) {
@@ -72,7 +75,7 @@ function BarChart(options) {
 		}
 
 		return self._element;
-	}
+	};
 
 
 	self.draw = function(elementId) {
@@ -105,6 +108,8 @@ function BarChart(options) {
 			}
 		}
 
+		self.drawVarianceBars();
+
 		if (self.objectLength(self._barColors)) {
 			self.drawKey(self._barColors);
 		}
@@ -133,7 +138,7 @@ function BarChart(options) {
 		else if (self._chartTitleTextAlign === 'right') {
 			ctx.fillText(self._chartTitle, self._width, self._fontSize * 2);
 		}
-	}
+	};
 
 
 	self.drawYAxisLabel = function() {
@@ -148,14 +153,14 @@ function BarChart(options) {
 		ctx.fillStyle = self._yAxisLabelColor;
 		ctx.fillText(self._yAxisLabel, 0, 0);
 		ctx.restore();
-	}
+	};
 
 
 	self.drawScale = function() {
 
 		if (self._division === 'auto') {
 			var x = Math.floor(self.chartHigh() / 10);
-			var every = Math.round(x / 15) * 10
+			var every = Math.round(x / 15) * 10;
 		} else {
 			var every = self._division;
 		}
@@ -178,7 +183,7 @@ function BarChart(options) {
 			ctx.closePath();
 			ctx.fillText(i, self.horizontalPixelPosition(0) - (self._fontSize / 2), self.verticalPixelPosition(i) + (self._fontSize / 4));
 		}
-	}
+	};
 
 
 	self.drawBars = function() {
@@ -210,10 +215,6 @@ function BarChart(options) {
 							barWidth / data[i].value.length, 
 							self.valueToPixels(data[i].value[i2].value) * -1
 						);
-
-						if (data[i].value[i2].variance !== undefined) {
-							self.drawErrorBars(rawHorizontalPosition,data[i].value[i2].value,data[i].value[i2].variance,data[i].value.length);
-						}
 
 						rawHorizontalPosition += barWidth / data[i].value.length;
 					}
@@ -276,40 +277,47 @@ function BarChart(options) {
 					barWidth, 
 					self.valueToPixels(data[i].value) * -1
 				);
-
-				if (data[i].variance !== undefined) {
-					self.drawErrorBars((i * (barWidth + barGutter) + barGutter),(data[i].value),data[i].variance);
-				}
 			}
 		}
-	}
+	};
 
-	self.drawErrorBars = function(xPos,yPos,variance,barCount) {
-		if (typeof barCount === 'undefined') { barCount = 1; }
+
+	self.drawVarianceBars = function() {
 		var ctx = self.context();
-		var barWidth = self._barWidth / barCount;
-		var barHeight = yPos;
-		var errorVariance = (variance / 100) * barHeight;
+		var barGutter = self._barGutter;
+		var barWidth = self._barWidth;
+		var data = self._data;
+		var fontSize = self.getXAxisLabelFontSize();
+		var x, y, errorVariance;
 
 		ctx.strokeStyle = self._defaultVarianceColor;
-		ctx.lineWidth = 2;
+		ctx.lineWidth = self._defaultVarianceLineWidth;
 
-		if ( yPos !== 0 ) {
-			ctx.beginPath();
+		for (var i = 0, len = data.length; i < len; i ++) {
+			if (data[i].variance) {
+				x = self.horizontalPixelPosition(i * (barWidth + barGutter) + barGutter + (barWidth / 2));
+				y = self.verticalPixelPosition(self.barMax(data[i]));
+				errorVariance = self.valueToPixels(data[i].variance);
+				ctx.beginPath();
+				
 				// Vertical Line
-				ctx.moveTo(self.horizontalPixelPosition(xPos + (barWidth / 2)), self.verticalPixelPosition((yPos) - errorVariance));
-				ctx.lineTo(self.horizontalPixelPosition(xPos + (barWidth / 2)), self.verticalPixelPosition((yPos) + errorVariance));
+				ctx.moveTo(x, y - errorVariance);
+				ctx.lineTo(x, y + errorVariance);
+				
 				// Top Horizontal Line
-		    	ctx.moveTo(self.horizontalPixelPosition(xPos + (barWidth * .65)),self.verticalPixelPosition((yPos) + errorVariance));
-		    	ctx.lineTo(self.horizontalPixelPosition(xPos + (barWidth * .35)),self.verticalPixelPosition((yPos) + errorVariance));
+		    	ctx.moveTo(x - (barWidth * 0.3), y + errorVariance);
+		    	ctx.lineTo(x + (barWidth * 0.3), y + errorVariance);
+		    	
 		    	// Bottom Horizontal Line
-		    	ctx.moveTo(self.horizontalPixelPosition(xPos + (barWidth * .65)),self.verticalPixelPosition((yPos) - errorVariance));
-		    	ctx.lineTo(self.horizontalPixelPosition(xPos + (barWidth * .35)),self.verticalPixelPosition((yPos) - errorVariance));
+		    	ctx.moveTo(x - (barWidth * 0.3), y - errorVariance);
+		    	ctx.lineTo(x + (barWidth * 0.3), y - errorVariance);
+		    	
 		    	ctx.stroke();
-			ctx.closePath();
+				ctx.closePath();
+			}
 		}
+	};
 
-	}
 
 	self.drawBarLabels = function() {
 		var ctx = self.context();
@@ -328,7 +336,7 @@ function BarChart(options) {
 			ctx.fillText(data[i].label, 0, 0);
 			ctx.restore();
 		}
-	}
+	};
 
 
 	self.drawKey = function(keyData) {
@@ -377,7 +385,7 @@ function BarChart(options) {
 				}
 			}
 		}
-	}
+	};
 
 
 	self.drawRange = function(low, high, label, color) {
@@ -396,7 +404,8 @@ function BarChart(options) {
 			ctx.fillStyle = color || self._defaultRangeColor;
 			ctx.fillText(label, self.getChartRightPos(), self.verticalPixelPosition(high) - (self._fontSize * 0.5));
 		}
-	}
+	};
+
 
 	self.drawTarget = function(target, label, color) {
 		var ctx = self.context();
@@ -416,7 +425,8 @@ function BarChart(options) {
 			ctx.fillStyle = color || self._defaultTargetColor;
 			ctx.fillText(label, self.getChartRightPos(), self.verticalPixelPosition(target) - (self._fontSize * 0.5));
 		}
-	}
+	};
+
 
 	self.chartLow = function() {
 		if (self._chartLow === null) {
@@ -431,7 +441,7 @@ function BarChart(options) {
 		}
 
 		return self._chartLow;
- 	}
+ 	};
 
 
 	self.chartHigh = function() {
@@ -457,7 +467,7 @@ function BarChart(options) {
 		}
 
 		return self._chartHigh;
-	}
+	};
 
 
 	/**
@@ -478,7 +488,7 @@ function BarChart(options) {
 		}
 
 		return barLow;
-	}
+	};
 
 
 	/**
@@ -486,7 +496,7 @@ function BarChart(options) {
 	 */
 	self.barHigh = function(bar) {
 		return (self.barTotal(bar) > 0) ? self.barTotal(bar) : 0;
-	}
+	};
 
 
 	/**
@@ -504,7 +514,31 @@ function BarChart(options) {
 		}
 
 		return barTotal;
-	}
+	};
+
+
+	/**
+	 * Returns the sum of values in a bar if in stacked mode,
+	 * or the max bar value if in grouped mode
+	 */
+	self.barMax = function(bar) {
+		if (!isNaN(bar.value)) {
+			return bar.value;
+		}
+
+		var barMax = 0;
+
+		for (var i = 0, len = bar.value.length; i < len; i ++) {
+			if (self._barDivisionType === 'stack') {
+				barMax += bar.value[i].value;
+			}
+			else if (barMax < bar.value[i].value) {
+				barMax = bar.value[i].value;
+			}
+		}
+
+		return barMax;
+	};
 
 
 	self.valueToPixels = function(value) { 
@@ -512,7 +546,7 @@ function BarChart(options) {
 		var valueAsPercentage = value / chartRange;
 		var pixels = (self.getChartHeight() * valueAsPercentage);
 		return Math.round(pixels);
-	}
+	};
 
 
 	self.verticalPixelOffset = function() {
@@ -521,47 +555,47 @@ function BarChart(options) {
 		var offsetAsPercentage = offset / chartRange;
 		var pixelOffset = (self.getChartHeight() * offsetAsPercentage);
 		return pixelOffset;
-	}
+	};
 
 
 	self.verticalPixelPosition = function(value) {
 		return self.getChartBottomPos() - self.verticalPixelOffset() - self.valueToPixels(value);
-	}
+	};
 
 
 	self.getChartBottomPos = function() {
 		return self._height - self.getBarLabelsHeight() - self.getKeyHeight(self._barColors);
-	}
+	};
 
 
 	self.getChartHeight = function() {
 		return self.getChartBottomPos() - self.getChartTitleHeight();
-	}
+	};
 
 
 	self.getChartTitleHeight = function() {
 		return (self._chartTitle) ? self._fontSize * 8 : self._fontSize * 0.5;
-	}
+	};
 
 
 	self.horizontalPixelPosition = function(chartPos) {
 		return self.getChartLeftPos() + chartPos;
-	}
+	};
 
 
 	self.getChartWidth = function() {
 		return self._width - self.getChartLeftPos();
-	}
+	};
 
 
 	self.getChartRightPos = function() {
 		return self._width;
-	}
+	};
 
 
 	self.getChartLeftPos = function() {
 		return self.getYAxisLabelWidth() + self.getYAxisScaleWidth();
-	}
+	};
 
 
 	self.getYAxisLabelWidth = function() {
@@ -570,7 +604,7 @@ function BarChart(options) {
 		}
 
 		return 0;
-	}
+	};
 
 
 	self.getYAxisScaleWidth = function() {
@@ -589,7 +623,7 @@ function BarChart(options) {
 		}
 
 		return self.widestText(textArray, self.font()) + (self._fontSize / 2);
-	}
+	};
 
 
 	self.getBarLabelsHeight = function() {
@@ -602,23 +636,23 @@ function BarChart(options) {
 		}
 
 		return self.widestText(textArray, fontSize + 'px ' + self._font) + (fontSize * 2);
-	}
+	};
 
 
 	self.getKeyHeight = function(keyData) {
 		return (self.getKeyRows(keyData)) ? (self.getKeyRows(keyData) * self._fontSize * 1.6) + (self._fontSize * 7.2) : 0;
-	}
+	};
 
 
 	self.getKeyColumns = function(keyData) {
 		var colWidth = self.widestText(self.getKeyTextAsArray(keyData), self.font()) + (self._fontSize * 2) + 45;
 		return Math.floor(self._width / colWidth);
-	}
+	};
 
 
 	self.getKeyRows = function(keyData) {
 		return Math.ceil(self.getKeyTextAsArray(keyData).length / self.getKeyColumns(keyData));
-	}
+	};
 
 
 	self.getKeyTextAsArray = function(keyData) {
@@ -631,12 +665,12 @@ function BarChart(options) {
 		}
 
 		return textArray;
-	}
+	};
 
 
 	self.getXAxisLabelFontSize = function() {
 		return self._fontSize;
-	}
+	};
 
 
 	self.widestText = function(textArray, font) {
@@ -654,22 +688,22 @@ function BarChart(options) {
 		}
 
 		return widest;
-	}
+	};
 
 
 	self.font = function() {
 		return self._fontSize + 'px ' + self._font;
-	}
+	};
 
 
 	self.getLabelColor = function(label) {
 		return (self._barColors[label]) ? self._barColors[label] : null;
-	}
+	};
 
 
 	self.setHeight = function() {
 		self._height = self._chartHeight + self.getChartTitleHeight() + self.getBarLabelsHeight() + self.getKeyHeight(self._barColors);
-	}
+	};
 
 
 	self.objectLength = function(obj) {
@@ -693,4 +727,4 @@ function BarChart(options) {
 
 	
 	return self;
-};
+}
