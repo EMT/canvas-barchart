@@ -23,6 +23,7 @@ function BarChart(options) {
 	self._defaultRangeColor = options._defaultRangeColor || 'rgb(254,204,204)';
 	self._targets = options.targets || [];
 	self._defaultTargetColor = options._defaultTargetColor || 'rgb(236,102,79)';
+	self._targetRange = options.targetRange || [];
 	self._defaultVarianceColor = options.defaultVarianceColor || 'rgb(0,0,0)';
 	self._defaultVarianceLineWidth = options.defaultVarianceLineWidth || 1;
 	self._font = options.font || 'Arial';
@@ -106,6 +107,11 @@ function BarChart(options) {
 			for (var i = 0, len = self._targets.length; i < len; i ++) {
 				self.drawTarget(self._targets[i].target, self._targets[i].label, self._targets[i].color);
 			}
+		}
+
+		// draw Target range
+		if (self._targetRange && self._targetRange.length ==  2) {
+			self.drawTargetRange(self._targetRange);
 		}
 
 		self.drawVarianceBars();
@@ -426,6 +432,18 @@ function BarChart(options) {
 			ctx.fillText(label, self.getChartRightPos(), self.verticalPixelPosition(target) - (self._fontSize * 0.5));
 		}
 	};
+
+	self.drawTargetRange = function(targetRange){
+		var ctx = self.context();
+		ctx.fillStyle = "rgba(0,0,0,0.2)";
+		var width = self.getChartRightPos() - self.horizontalPixelPosition(0);
+		var height = self.verticalPixelPosition(targetRange[1].target) - self.verticalPixelPosition(targetRange[0].target)
+		ctx.fillRect(self.horizontalPixelPosition(0),self.verticalPixelPosition(targetRange[0].target),width, height);
+
+		ctx.fillStyle = targetRange[1].color || self._defaultTargetColor;
+		ctx.fillText("Target range:", self.getChartRightPos(), self.verticalPixelPosition(targetRange[1].target) - 2.5* self._fontSize);
+		ctx.fillText(targetRange[0].label + " - " + targetRange[1].label, self.getChartRightPos(), self.verticalPixelPosition(targetRange[1].target) - 1.25 * self._fontSize);
+	}
 
 
 	self.chartLow = function() {
